@@ -4,6 +4,7 @@ import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.codepath.oauth.OAuthBaseClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -44,6 +45,7 @@ public class TwitterClient extends OAuthBaseClient {
     }
     
     public void getUserProfile(AsyncHttpResponseHandler handler){
+    	Log.d("debug", "Calling verifying credentials");
     	String apiUrl = getApiUrl("account/verify_credentials.json");
     	RequestParams params = new RequestParams();
     	params.put("skip_status", "true");

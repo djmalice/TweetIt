@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.codepath.apps.tweetit.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -23,6 +24,7 @@ public class TimelineActivity extends Activity {
 	private ArrayAdapter<Tweet> aTweets;
 	private ListView lvTweets;
 	private long reset_max_id;
+	private final int REQUEST_CODE=20;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,10 +57,18 @@ public class TimelineActivity extends Activity {
 	
 	public void onComposeAction(MenuItem mi){
 		Intent i= new Intent(this,ComposeActivity.class);
-		startActivity(i);
+		startActivityForResult(i,REQUEST_CODE);
 	}
 	
-	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+		     
+		     String tweet = data.getExtras().getString("tweet");
+		     // Toast the name to display temporarily on screen
+		     Toast.makeText(this,tweet, Toast.LENGTH_LONG).show();
+		  }
+	}
 	
 	public void sendJsonRequest(boolean startPage){
 		if(startPage){

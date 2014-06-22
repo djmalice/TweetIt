@@ -22,6 +22,16 @@ public class User {
 		}
 		return user;
 	}
+	public User(){
+		
+	}
+	
+	public User(User u){
+		this.name = u.name;
+		this.profileImageUrl = u.profileImageUrl;
+		this.screenName = u.screenName;
+		this.uid = u.uid;
+	}
 
 	public String getName() {
 		return name;

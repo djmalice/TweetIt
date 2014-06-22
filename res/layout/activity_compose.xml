@@ -37,10 +37,11 @@
         android:id="@+id/etComposeTweet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvAccountHandle"
+        android:layout_below="@+id/ivAccountProfileImage"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:layout_alignLeft="@id/ivAccountProfileImage"
+        android:layout_marginRight="24dp"
         android:hint="@string/watsupstring">
 
         <requestFocus />
