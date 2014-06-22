@@ -37,13 +37,14 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
 		TextView tvUserName = (TextView)v.findViewById(R.id.tvUserName);
 		TextView tvHandle = (TextView)v.findViewById(R.id.tvHandle);
 		TextView tvBody = (TextView)v.findViewById(R.id.tvBody);
-		
+		TextView tvTimestamp = (TextView)v.findViewById(R.id.tvTimestamp);
 		//Populate views with the tweet data
 		ImageLoader imageLoader = ImageLoader.getInstance();
 		imageLoader.displayImage(tweet.getUser().getProfileImageUrl(), ivProfileImage);
 		tvUserName.setText(tweet.getUser().getName());
-		tvHandle.setText(tweet.getUser().getScreenName());
+		tvHandle.setText("@" + tweet.getUser().getScreenName());
 		tvBody.setText(tweet.getBody());
+		tvTimestamp.setText(tweet.getTimestamp());
 		
 		return v;
 	}

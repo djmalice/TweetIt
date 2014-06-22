@@ -26,7 +26,8 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tvUserName"
         android:layout_below="@+id/tvUserName"
-        android:text="This is a tweet" />
+        android:text="This is a tweet"
+        android:autoLink="all" />
 
     <TextView
         android:id="@+id/tvHandle"
@@ -35,5 +36,17 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/tvUserName"
         android:text="handle name" />
+
+    <TextView
+        android:id="@+id/tvTimestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignBaseline="@+id/tvHandle"
+        android:layout_marginRight="3dp"
+        android:text="Small Text"
+       
+        android:textAppearance="?android:attr/textAppearanceSmall" />
 
 </RelativeLayout>

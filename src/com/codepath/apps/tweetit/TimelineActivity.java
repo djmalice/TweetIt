@@ -4,10 +4,13 @@ import java.util.ArrayList;
 
 import org.json.JSONArray;
 
-
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -30,7 +33,7 @@ public class TimelineActivity extends Activity {
 		lvTweets = (ListView)findViewById(R.id.lvTweets);
 		tweets = new ArrayList<Tweet>();
 		aTweets = new TweetArrayAdapter(this,tweets);
-		Log.d("lvArray", aTweets.toString());
+		// Log.d("lvArray", aTweets.toString());
 		lvTweets.setAdapter(aTweets);
 		lvTweets.setOnScrollListener(new EndlessScrollListener() {
 			
@@ -40,20 +43,30 @@ public class TimelineActivity extends Activity {
 				sendJsonRequest(false);
 			}
 		});
-		
-		
 	}
 	
-	public void sendJsonRequest(boolean startPage){
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.menu_item, menu);
 		
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	public void onComposeAction(MenuItem mi){
+		Intent i= new Intent(this,ComposeActivity.class);
+		startActivity(i);
+	}
+	
+	
+	
+	public void sendJsonRequest(boolean startPage){
 		if(startPage){
 			populateTimeline(1,-1);
 		}else{
 			populateTimeline(-1,reset_max_id);
 			Log.d("debug", "Sendjsonrequest max_id:" + reset_max_id);
 		}
-			
-		
 	}
 
 	public void populateTimeline(long since_id, long max_id){

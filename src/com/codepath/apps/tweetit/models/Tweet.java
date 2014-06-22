@@ -1,10 +1,16 @@
 package com.codepath.apps.tweetit.models;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.text.format.DateUtils;
+
 
 public class Tweet {
 	private String body;
@@ -66,6 +72,27 @@ public class Tweet {
 				}
 		}		
 		return tweets;
+	}
+	public String getTimestamp(){
+		
+		String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+		SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+		sf.setLenient(true);
+	 
+		String relativeDate = "";
+		try {
+			long dateMillis = sf.parse(getCreatedAt()).getTime();
+			relativeDate = DateUtils.getRelativeTimeSpanString(dateMillis,
+					System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS).toString();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		// Some parsing to make it Twitter like
+		String rmAgo = relativeDate.substring(0,relativeDate.indexOf(" ")+2);
+		String compactRelativeDate = rmAgo.replace("\\s+","");
+		
+		return compactRelativeDate;
 	}
 	
 	@Override
