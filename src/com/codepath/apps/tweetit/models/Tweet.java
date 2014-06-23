@@ -1,5 +1,6 @@
 package com.codepath.apps.tweetit.models;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,7 +13,9 @@ import org.json.JSONObject;
 import android.text.format.DateUtils;
 
 
-public class Tweet {
+public class Tweet implements Serializable{
+	
+	private static final long serialVersionUID = -9115245570155496990L;
 	private String body;
 	private long uid;
 	private String createdAt;
@@ -36,6 +39,22 @@ public class Tweet {
 	}
 
 	
+	public void setBody(String body) {
+		this.body = body;
+	}
+
+	public void setUid(long uid) {
+		this.uid = uid;
+	}
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public static Tweet fromJSON(JSONObject jsonObject){
 		Tweet tweet= new Tweet();
 		// Extract values from JSON to populate tweet
@@ -95,9 +114,5 @@ public class Tweet {
 		return compactRelativeDate;
 	}
 	
-	@Override
-	public String toString() {
-		// TODO Auto-generated method stub
-		return getBody() + "-" + getUser().getName() ;
-	}
+	
 }

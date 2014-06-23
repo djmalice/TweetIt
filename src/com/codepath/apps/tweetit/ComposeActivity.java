@@ -1,5 +1,9 @@
 package com.codepath.apps.tweetit;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -13,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.codepath.apps.tweetit.models.Tweet;
 import com.codepath.apps.tweetit.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -23,7 +28,7 @@ public class ComposeActivity extends Activity {
 	private EditText etComposeTweet;
 	private ImageView ivAccountProfileImage;
 	private TwitterClient client;
-	
+	private User u;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +53,7 @@ public class ComposeActivity extends Activity {
 				Log.d("debug", "Current User Details: Handle:" + currentUser.getScreenName());
 				Log.d("debug", "Current User Details: Imageurl:" + currentUser.getProfileImageUrl());
 				setupUserInfo(currentUser);
-				
+				u=currentUser;
 			}
 					
 
@@ -71,12 +76,50 @@ public class ComposeActivity extends Activity {
 	
 	public void onTweetAction(MenuItem mi){
 		Intent data = new Intent();
-		data.putExtra("tweetBody", etComposeTweet.getText().toString());
+		
+		// Build tweet object
+	    Tweet t = buildTweet();
+	    
+	    // Post tweet to Twitter
+	    postToTwitter();
+	    
+	    // Put to intent pass to timeline activity
+	    
+		data.putExtra("tweet",t);
 		setResult(RESULT_OK,data);
 		finish();
 	}
 	
+	public void postToTwitter(){
+		String status = etComposeTweet.getText().toString();
+		Log.d("debug", "Posting to twitter" + status);
+		client.postTweet(new JsonHttpResponseHandler(){
+			@Override
+			public void onFailure(Throwable arg0, String arg1) {
+				Log.d("debug",arg0.toString());
+				Log.d("debug", arg1.toString());
+			}
+		},status);
+	}
 	
+	public Tweet buildTweet(){
+		Tweet t = new Tweet();
+		t.setUser(u);
+		t.setBody(etComposeTweet.getText().toString());
+		t.setUid(1);
+		// Getting current system time
+		String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+		SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+		t.setCreatedAt(sf.format(new Date()));
+		Log.d("debug", "Bt Current User Details: Name:" + t.getUser().getName());
+		Log.d("debug", "Bt Current User Details: Handle:" + t.getUser().getScreenName());
+		Log.d("debug", "BtCurrent User Details: Imageurl:" + t.getUser().getProfileImageUrl());
+		Log.d("debug", "Bt Current Tweet Body:" + t.getBody());
+		Log.d("debug", "Bt Current Tweet Create at:" + t.getCreatedAt());
+		
+		
+		return t;
+	}
 	
 	public void setupUserInfo(User currentUser){
 		if(currentUser !=null){
@@ -86,6 +129,7 @@ public class ComposeActivity extends Activity {
 				imageLoader.displayImage(currentUser.getProfileImageUrl(), ivAccountProfileImage);
 	
 		}
+		
 	}
 	
 	

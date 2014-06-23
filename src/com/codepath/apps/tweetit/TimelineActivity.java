@@ -12,18 +12,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.codepath.apps.tweetit.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
+import eu.erikw.PullToRefreshListView;
+import eu.erikw.PullToRefreshListView.OnRefreshListener;
+
 public class TimelineActivity extends Activity {
 	private TwitterClient client;
 	private ArrayList<Tweet> tweets;
 	private ArrayAdapter<Tweet> aTweets;
-	private ListView lvTweets;
+	private PullToRefreshListView lvTweets;
 	private long reset_max_id;
+	private long reset_since_id;
 	private final int REQUEST_CODE=20;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +34,8 @@ public class TimelineActivity extends Activity {
 		setContentView(R.layout.activity_timeline);
 		reset_max_id=-1;
 		client = TwitterClientApplication.getRestClient();
-		sendJsonRequest(true);
-		lvTweets = (ListView)findViewById(R.id.lvTweets);
+		sendJsonRequest(true,1,-1);
+		lvTweets = (PullToRefreshListView)findViewById(R.id.lvTweets);
 		tweets = new ArrayList<Tweet>();
 		aTweets = new TweetArrayAdapter(this,tweets);
 		// Log.d("lvArray", aTweets.toString());
@@ -42,9 +45,23 @@ public class TimelineActivity extends Activity {
 			@Override
 			public void onLoadMore(int page, int totalItemsCount) {
 				// TODO Auto-generated method stub
-				sendJsonRequest(false);
+				sendJsonRequest(false,-1,reset_max_id);
 			}
 		});
+		
+		lvTweets.setOnRefreshListener(new OnRefreshListener() {
+			
+			@Override
+			public void onRefresh() {
+				// TODO Auto-generated method stub
+				fetchNewTweets();
+			}
+		});
+		
+	}
+	
+	public void fetchNewTweets(){
+		sendJsonRequest(false,reset_since_id,reset_max_id);
 	}
 	
 	@Override
@@ -64,23 +81,34 @@ public class TimelineActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
 		     
-		     String tweet = data.getExtras().getString("tweet");
+		     Tweet t = (Tweet)data.getSerializableExtra("tweet");
 		     // Toast the name to display temporarily on screen
-		     Toast.makeText(this,tweet, Toast.LENGTH_LONG).show();
+		     if (t == null){
+		    	 Log.d("debug", "serilaized tweet is null");
+		     }else {
+		    	Log.d("debug", "Bt3 Current User Details: Name:" + t.getUser().getName());
+				Log.d("debug", "Bt3 Current User Details: Handle:" + t.getUser().getScreenName());
+				Log.d("debug", "Bt3Current User Details: Imageurl:" + t.getUser().getProfileImageUrl());
+				Log.d("debug", "Bt3 Current Tweet Body:" + t.getBody());
+				Log.d("debug", "Bt3 Current Tweet Create at:" + t.getCreatedAt());
+				aTweets.insert(t, 0);
+				aTweets.notifyDataSetChanged();
+		        Toast.makeText(this,t.toString(), Toast.LENGTH_LONG).show();
+		     }
 		  }
 	}
 	
-	public void sendJsonRequest(boolean startPage){
+	public void sendJsonRequest(boolean startPage, long since_id, long max_id){
 		if(startPage){
-			populateTimeline(1,-1);
+			populateTimeline(since_id,max_id);
 		}else{
-			populateTimeline(-1,reset_max_id);
-			Log.d("debug", "Sendjsonrequest max_id:" + reset_max_id);
+			populateTimeline(since_id,max_id);
+			//Log.d("debug", "Sendjsonrequest max_id:" + reset_max_id);
 		}
 	}
 
 	public void populateTimeline(long since_id, long max_id){
-		Log.d("debug","running populateTimeline" + "since_id: " + since_id + "max_id:" + max_id);
+		Log.d("debug","running populateTimeline" + "since_id: " + since_id + "max_id: " + max_id);
 				
 		client.getHomeTimeline(new JsonHttpResponseHandler(){
 			@Override
@@ -89,9 +117,10 @@ public class TimelineActivity extends Activity {
 					//Log.d("debug",json.toString());
 					
 					aTweets.addAll(Tweet.fromJSONArray(json));
-					
 					reset_max_id = aTweets.getItem(aTweets.getCount()-1).getUid();
-		
+					reset_since_id = aTweets.getItem(0).getUid();
+					lvTweets.onRefreshComplete();
+					
 				} catch (Exception e){
 					e.printStackTrace();
 				}
