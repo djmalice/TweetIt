@@ -1,20 +1,25 @@
 package com.codepath.apps.tweetit;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
+import com.activeandroid.ActiveAndroid;
 import com.codepath.apps.tweetit.models.Tweet;
+import com.codepath.apps.tweetit.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import eu.erikw.PullToRefreshListView;
@@ -34,18 +39,19 @@ public class TimelineActivity extends Activity {
 		setContentView(R.layout.activity_timeline);
 		reset_max_id=-1;
 		client = TwitterClientApplication.getRestClient();
-		sendJsonRequest(true,1,-1);
+		
 		lvTweets = (PullToRefreshListView)findViewById(R.id.lvTweets);
 		tweets = new ArrayList<Tweet>();
 		aTweets = new TweetArrayAdapter(this,tweets);
 		// Log.d("lvArray", aTweets.toString());
 		lvTweets.setAdapter(aTweets);
+		sendJsonRequest(1,-1);
 		lvTweets.setOnScrollListener(new EndlessScrollListener() {
 			
 			@Override
 			public void onLoadMore(int page, int totalItemsCount) {
 				// TODO Auto-generated method stub
-				sendJsonRequest(false,-1,reset_max_id);
+				sendJsonRequest(-1,reset_max_id);
 			}
 		});
 		
@@ -58,10 +64,11 @@ public class TimelineActivity extends Activity {
 			}
 		});
 		
+		
 	}
 	
 	public void fetchNewTweets(){
-		sendJsonRequest(false,reset_since_id,reset_max_id);
+		populateFreshTimeline(reset_since_id,-1);
 	}
 	
 	@Override
@@ -93,17 +100,35 @@ public class TimelineActivity extends Activity {
 				Log.d("debug", "Bt3 Current Tweet Create at:" + t.getCreatedAt());
 				aTweets.insert(t, 0);
 				aTweets.notifyDataSetChanged();
-		        Toast.makeText(this,t.toString(), Toast.LENGTH_LONG).show();
+		        //Toast.makeText(this,t.toString(), Toast.LENGTH_LONG).show();
 		     }
 		  }
 	}
 	
-	public void sendJsonRequest(boolean startPage, long since_id, long max_id){
-		if(startPage){
-			populateTimeline(since_id,max_id);
-		}else{
-			populateTimeline(since_id,max_id);
-			//Log.d("debug", "Sendjsonrequest max_id:" + reset_max_id);
+	//Check for network connectivity
+	private Boolean isNetworkAvailable() {
+	    ConnectivityManager connectivityManager 
+	          = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+	    return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+	}
+	
+	public void sendJsonRequest(long since_id, long max_id){
+		if(isNetworkAvailable()){
+		   populateTimeline(since_id,max_id);
+		} else {
+			Log.d("debug", "Network unavailable:");
+			List<Tweet> savedTweets = new ArrayList<Tweet>();
+			savedTweets = Tweet.getAll();
+			
+			if(savedTweets != null) {
+				Log.d("debug", "dbTweets:" + savedTweets.toString());	
+				aTweets.addAll(savedTweets);
+			}
+			else {
+				Log.d("debug", "savedTweets is null");
+			}
+			
 		}
 	}
 
@@ -115,8 +140,66 @@ public class TimelineActivity extends Activity {
 			public void onSuccess(JSONArray json) {
 				try { 
 					//Log.d("debug",json.toString());
+					ArrayList<Tweet> freshTweets = new ArrayList<Tweet>();
+					freshTweets = Tweet.fromJSONArray(json);
+					ActiveAndroid.beginTransaction();
+					try {
+					        for (int i = 0; i < freshTweets.size(); i++) {
+					            Tweet item = freshTweets.get(i);
+					            User u = item.getUser();
+					            u.save();
+					            item.save();
+					        }
+					        ActiveAndroid.setTransactionSuccessful();
+					}
+					finally {
+					        ActiveAndroid.endTransaction();
+					}
 					
-					aTweets.addAll(Tweet.fromJSONArray(json));
+					aTweets.addAll(freshTweets);
+					reset_max_id = aTweets.getItem(aTweets.getCount()-1).getUid();
+					reset_since_id = aTweets.getItem(0).getUid();
+								
+				} catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+			@Override
+			public void onFailure(Throwable arg0, String arg1) {
+				// TODO Auto-generated method stub
+				Log.d("debug",arg0.toString());
+				Log.d("debug", arg1.toString());
+				
+			}
+		},max_id - 1,since_id);
+	}
+	
+	public void populateFreshTimeline(long since_id, long max_id){
+		Log.d("debug","running populateTimeline" + "since_id: " + since_id + "max_id: " + max_id);
+				
+		client.getHomeTimeline(new JsonHttpResponseHandler(){
+			@Override
+			public void onSuccess(JSONArray json) {
+				try { 
+					//Log.d("debug",json.toString());
+					ArrayList<Tweet> freshTweets = new ArrayList<Tweet>();
+					freshTweets = Tweet.fromJSONArray(json);
+					ActiveAndroid.beginTransaction();
+					try {
+					        for (int i = 0; i < freshTweets.size(); i++) {
+					            Tweet item = freshTweets.get(i);
+					            User u = item.getUser();
+					            u.save();
+					            item.save();
+					        }
+					        ActiveAndroid.setTransactionSuccessful();
+					}
+					finally {
+					        ActiveAndroid.endTransaction();
+					}
+					for(int i=freshTweets.size()-1;i>=0;i--){
+						aTweets.insert(freshTweets.get(i), 0);
+					}
 					reset_max_id = aTweets.getItem(aTweets.getCount()-1).getUid();
 					reset_since_id = aTweets.getItem(0).getUid();
 					lvTweets.onRefreshComplete();
@@ -134,4 +217,9 @@ public class TimelineActivity extends Activity {
 			}
 		},max_id - 1,since_id);
 	}
+	
+	
+	
+	
+	
 }

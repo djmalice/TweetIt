@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.json.JSONArray;
@@ -12,15 +13,28 @@ import org.json.JSONObject;
 
 import android.text.format.DateUtils;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Column.ForeignKeyAction;
+import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
 
-public class Tweet implements Serializable{
+@Table(name = "Tweet")
+public class Tweet extends Model implements Serializable  {
 	
 	private static final long serialVersionUID = -9115245570155496990L;
+	@Column(name = "body")
 	private String body;
+	@Column(name = "uid", unique =true, onUniqueConflict = Column.ConflictAction.REPLACE )
 	private long uid;
+	@Column(name = "created_at")
 	private String createdAt;
+	@Column(name = "user", onUpdate = ForeignKeyAction.CASCADE, onDelete = ForeignKeyAction.CASCADE)
 	private User user;
 	
+	public Tweet(){
+		super();
+	}
 	
 	public String getBody() {
 		return body;
@@ -109,10 +123,12 @@ public class Tweet implements Serializable{
 		
 		// Some parsing to make it Twitter like
 		String rmAgo = relativeDate.substring(0,relativeDate.indexOf(" ")+2);
-		String compactRelativeDate = rmAgo.replace("\\s+","");
+		String compactRelativeDate = rmAgo.replaceAll("\\s+","");
 		
 		return compactRelativeDate;
 	}
 	
-	
+	public static List<Tweet> getAll(){
+		return new Select().from(Tweet.class).orderBy("created_at DESC").execute();
+	}
 }

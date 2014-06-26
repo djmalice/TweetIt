@@ -1,6 +1,14 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<style name="MyCustomTheme" parent="@android:style/Theme.Holo.Light">
-        <item name="android:background">#598DCA</item>
+    <style name="MyCustomTheme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+    </style>
+
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">#2DAAE1</item>
+        <item name="android:titleTextStyle">@style/MyActionBar.TitleTextStyle</item>
+    </style>
+
+    <style name="MyActionBar.TitleTextStyle" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">#FFFFFF</item>
     </style>
     <!--
