@@ -1,4 +1,4 @@
-package com.codepath.apps.tweetit;
+package com.smalltricks.apps.tweetit.activities;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,10 +17,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.codepath.apps.tweetit.models.Tweet;
-import com.codepath.apps.tweetit.models.User;
+import com.smalltricks.apps.tweetit.R;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.smalltricks.apps.tweetit.TwitterClient;
+import com.smalltricks.apps.tweetit.TwitterClientApplication;
+import com.smalltricks.apps.tweetit.models.Tweet;
+import com.smalltricks.apps.tweetit.models.User;
 
 public class ComposeActivity extends Activity {
 	private TextView tvAccountUserName;

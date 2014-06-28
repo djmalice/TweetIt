@@ -1,4 +1,4 @@
-package com.codepath.apps.tweetit;
+package com.smalltricks.apps.tweetit.adapters;
 
 import java.util.List;
 
@@ -10,8 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.codepath.apps.tweetit.models.Tweet;
+import com.smalltricks.apps.tweetit.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.smalltricks.apps.tweetit.models.Tweet;
 
 public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
 		

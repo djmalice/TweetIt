@@ -1,4 +1,4 @@
-package com.codepath.apps.tweetit.models;
+package com.smalltricks.apps.tweetit.models;
 
 import java.util.List;
 

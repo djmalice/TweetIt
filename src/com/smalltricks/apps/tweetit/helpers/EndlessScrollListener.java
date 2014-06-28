@@ -1,4 +1,4 @@
-package com.codepath.apps.tweetit;
+package com.smalltricks.apps.tweetit.helpers;
 
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;

@@ -1,4 +1,4 @@
-package com.codepath.apps.tweetit;
+package com.smalltricks.apps.tweetit;
 
 import org.scribe.builder.api.Api;
 import org.scribe.builder.api.TwitterApi;

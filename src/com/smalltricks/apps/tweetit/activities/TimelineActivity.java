@@ -1,4 +1,4 @@
-package com.codepath.apps.tweetit;
+package com.smalltricks.apps.tweetit.activities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +19,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
-import com.codepath.apps.tweetit.models.Tweet;
-import com.codepath.apps.tweetit.models.User;
+import com.smalltricks.apps.tweetit.R;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.smalltricks.apps.tweetit.TwitterClient;
+import com.smalltricks.apps.tweetit.TwitterClientApplication;
+import com.smalltricks.apps.tweetit.adapters.TweetArrayAdapter;
+import com.smalltricks.apps.tweetit.helpers.EndlessScrollListener;
+import com.smalltricks.apps.tweetit.models.Tweet;
+import com.smalltricks.apps.tweetit.models.User;
 
 import eu.erikw.PullToRefreshListView;
 import eu.erikw.PullToRefreshListView.OnRefreshListener;

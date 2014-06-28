@@ -1,11 +1,13 @@
-package com.codepath.apps.tweetit;
+package com.smalltricks.apps.tweetit.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import com.smalltricks.apps.tweetit.R;
 import com.codepath.oauth.OAuthLoginActivity;
+import com.smalltricks.apps.tweetit.TwitterClient;
 
 public class LoginActivity extends OAuthLoginActivity<TwitterClient> {
 
