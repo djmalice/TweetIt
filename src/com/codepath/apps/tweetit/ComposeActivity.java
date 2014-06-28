@@ -38,7 +38,7 @@ public class ComposeActivity extends Activity {
 		tvAccountHandle = (TextView)findViewById(R.id.tvAccountHandle);
 		ivAccountProfileImage = (ImageView)findViewById(R.id.ivAccountProfileImage);
 		etComposeTweet = (EditText)findViewById(R.id.etComposeTweet);
-		etComposeTweet.setBackgroundResource(android.R.drawable.editbox_dropdown_light_frame);
+		
 		client = TwitterClientApplication.getRestClient();
 		client.getUserProfile(new JsonHttpResponseHandler(){
 			@Override

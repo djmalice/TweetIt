@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.activeandroid.ActiveAndroid;
 import com.codepath.apps.tweetit.models.Tweet;
@@ -68,7 +69,7 @@ public class TimelineActivity extends Activity {
 	}
 	
 	public void fetchNewTweets(){
-		populateFreshTimeline(reset_since_id,-1);
+		populateFreshTimeline(reset_since_id,0);
 	}
 	
 	@Override
@@ -126,7 +127,7 @@ public class TimelineActivity extends Activity {
 				aTweets.addAll(savedTweets);
 			}
 			else {
-				Log.d("debug", "savedTweets is null");
+				Toast.makeText(getApplicationContext(), "Check network connectivity", Toast.LENGTH_LONG).show();
 			}
 			
 		}
@@ -175,7 +176,7 @@ public class TimelineActivity extends Activity {
 	}
 	
 	public void populateFreshTimeline(long since_id, long max_id){
-		Log.d("debug","running populateTimeline" + "since_id: " + since_id + "max_id: " + max_id);
+		Log.d("debug","running populateFreshTimeline" + "since_id: " + since_id + "max_id: " + max_id);
 				
 		client.getHomeTimeline(new JsonHttpResponseHandler(){
 			@Override
@@ -198,7 +199,8 @@ public class TimelineActivity extends Activity {
 					        ActiveAndroid.endTransaction();
 					}
 					for(int i=freshTweets.size()-1;i>=0;i--){
-						aTweets.insert(freshTweets.get(i), 0);
+						if(freshTweets.get(i).getUid() > reset_since_id)
+							aTweets.insert(freshTweets.get(i), 0);
 					}
 					reset_max_id = aTweets.getItem(aTweets.getCount()-1).getUid();
 					reset_since_id = aTweets.getItem(0).getUid();

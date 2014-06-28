@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent" 
+   >
 
     <ImageView
         android:id="@+id/ivProfileImage"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="8dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="8dp"
         android:layout_height="40dp"
         android:layout_width="40dp"
         android:src="@drawable/ic_launcher" />
@@ -16,10 +18,23 @@
         android:id="@+id/tvUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/ivProfileImage"
+        android:layout_alignTop="@+id/ivProfileImage"
         android:layout_toRightOf="@+id/ivProfileImage"
-        android:layout_marginLeft="3dp"
+        android:layout_marginLeft="8dp"
+        android:textStyle="bold"
         android:text="name" />
+    
+    <TextView
+        android:id="@+id/tvHandle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tvUserName"
+        android:layout_alignBottom="@+id/tvUserName"
+        android:layout_marginLeft="4dp"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp"
+        android:text="handle name" />
+    
 
     <TextView
         android:id="@+id/tvBody"
@@ -27,17 +42,12 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/tvUserName"
         android:layout_below="@+id/tvUserName"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
         android:text="This is a tweet"
         android:autoLink="all" />
 
-    <TextView
-        android:id="@+id/tvHandle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/tvUserName"
-        android:text="handle name" />
-
+    
     <TextView
         android:id="@+id/tvTimestamp"
         android:layout_width="wrap_content"
@@ -46,8 +56,9 @@
         android:layout_alignParentTop="true"
         android:layout_alignBaseline="@+id/tvHandle"
         android:layout_marginRight="3dp"
+        android:textSize="12sp"
+        android:textColor="@android:color/darker_gray"
         android:text="Small Text"
-       
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+     />
 
 </RelativeLayout>

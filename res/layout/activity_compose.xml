@@ -42,7 +42,8 @@
         android:layout_marginTop="10dp"
         android:layout_alignLeft="@id/ivAccountProfileImage"
         android:layout_marginRight="24dp"
-        android:hint="@string/watsupstring">
+        android:hint="@string/watsupstring"
+        android:background="@android:color/transparent">
 
         <requestFocus />
     </EditText>
