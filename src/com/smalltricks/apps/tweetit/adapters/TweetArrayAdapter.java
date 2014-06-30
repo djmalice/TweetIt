@@ -3,15 +3,18 @@ package com.smalltricks.apps.tweetit.adapters;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.smalltricks.apps.tweetit.R;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.smalltricks.apps.tweetit.R;
+import com.smalltricks.apps.tweetit.activities.ProfileActivity;
 import com.smalltricks.apps.tweetit.models.Tweet;
 
 public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
@@ -42,6 +45,18 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
 		//Populate views with the tweet data
 		ImageLoader imageLoader = ImageLoader.getInstance();
 		imageLoader.displayImage(tweet.getUser().getProfileImageUrl(), ivProfileImage);
+		/*ivProfileImage.setTag(tweet.getUser().getId());
+		ivProfileImage.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent i = new Intent(getContext(),ProfileActivity.class);
+				i.putExtra("uid", ivProfileImage.getTag());
+				startActivity(i);
+			}
+		});*/
+		
 		tvUserName.setText(tweet.getUser().getName());
 		tvHandle.setText("@" + tweet.getUser().getScreenName());
 		tvBody.setText(tweet.getBody());

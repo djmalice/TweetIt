@@ -71,6 +71,11 @@ public class TimelineActivity extends FragmentActivity {
 		startActivityForResult(i,REQUEST_CODE);
 	}
 	
+	public void onProfileView(MenuItem mi){
+		Intent i= new Intent(this,ProfileActivity.class);
+		startActivity(i);
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
