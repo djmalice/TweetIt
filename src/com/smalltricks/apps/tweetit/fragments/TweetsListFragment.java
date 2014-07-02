@@ -35,7 +35,42 @@ public class TweetsListFragment extends Fragment {
 	private PullToRefreshListView lvTweets;
 	private long reset_max_id;
 	private long reset_since_id;
-	protected boolean homeTimeline;
+	private long userId;
+	/*protected enum timelineType{
+		HOME("HOME",0),
+		MENTIONS("MENTIONS",1),
+		PROFILE("PROFILE",2);
+		
+		private String stringValue;
+		private int intValue;
+		
+		private timelineType(String toString, int value){
+			stringValue = toString;
+			intValue = value;
+		}
+		
+		public String toString(){
+			return stringValue;
+		}
+		
+		public int getValue(){
+			return intValue;
+		}
+	}*/
+	
+	
+
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
+	protected enum timelineType{
+		HOME,
+		MENTIONS,
+		PROFILE
+	}
+	
+	timelineType tt;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +78,7 @@ public class TweetsListFragment extends Fragment {
 		tweets = new ArrayList<Tweet>();
 		aTweets = new TweetArrayAdapter(getActivity(),tweets);
 		client = TwitterClientApplication.getRestClient();
+		
 	}
 	
 	@Override
@@ -72,18 +108,20 @@ public class TweetsListFragment extends Fragment {
 		
 		
 		
+		
+		
 		// return layout view
 		
 		return v;
 	}
 	
 	public void fetchNewTweets(){
-		populateFreshTimeline(reset_since_id,0,homeTimeline);
+		populateFreshTimeline(reset_since_id,0,tt.ordinal());
 	}
 	
 	public void sendJsonRequest(long since_id, long max_id){
 		if(isNetworkAvailable()){
-		   populateTimeline(since_id,max_id,homeTimeline);
+		   populateTimeline(since_id,max_id,tt.ordinal());
 		} else {
 			Log.d("debug", "Network unavailable:");
 			List<Tweet> savedTweets = new ArrayList<Tweet>();
@@ -101,7 +139,7 @@ public class TweetsListFragment extends Fragment {
 		}
 	}
 	
-	public void populateTimeline(long since_id, long max_id, boolean home){
+	public void populateTimeline(long since_id, long max_id, int tid){
 		Log.d("debug","running populateTimeline" + "since_id: " + since_id + "max_id: " + max_id);
 				
 		client.getHomeTimeline(new JsonHttpResponseHandler(){
@@ -139,10 +177,10 @@ public class TweetsListFragment extends Fragment {
 				Log.d("debug", arg1.toString());
 				
 			}
-		},max_id - 1,since_id,home);
+		},max_id - 1,since_id,tid,userId);
 	}
 	
-	public void populateFreshTimeline(long since_id, long max_id, boolean home){
+	public void populateFreshTimeline(long since_id, long max_id, int tid){
 		Log.d("debug","running populateFreshTimeline" + "since_id: " + since_id + "max_id: " + max_id);
 				
 		client.getHomeTimeline(new JsonHttpResponseHandler(){
@@ -184,7 +222,7 @@ public class TweetsListFragment extends Fragment {
 				Log.d("debug", arg1.toString());
 				
 			}
-		},max_id - 1,since_id,home);
+		},max_id - 1,since_id,tid,userId);
 	}
 	
 	//Check for network connectivity

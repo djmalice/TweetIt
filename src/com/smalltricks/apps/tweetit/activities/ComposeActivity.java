@@ -43,7 +43,7 @@ public class ComposeActivity extends Activity {
 		etComposeTweet = (EditText)findViewById(R.id.etComposeTweet);
 		
 		client = TwitterClientApplication.getRestClient();
-		client.getUserProfile(new JsonHttpResponseHandler(){
+		client.getAppUserProfile(new JsonHttpResponseHandler(){
 			@Override
 			public void onSuccess(JSONObject jsonObject) {
 				User currentUser = new User();

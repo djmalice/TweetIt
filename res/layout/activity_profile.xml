@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/rlHeader"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content" >
 
         <ImageView
             android:id="@+id/ivUserProfileImage"
@@ -62,15 +62,17 @@
         </LinearLayout>
 
     </RelativeLayout>
-
-    <fragment
-        android:id="@+id/fragmentUserTimeline"
-        android:name="com.smalltricks.apps.tweetit.fragments.UserTimelineFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        tools:layout="@layout/fragment_tweets_list" />
+	
+	<FrameLayout
+       android:id="@+id/flUserTimeline"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_below="@+id/rlHeader"
+       android:layout_alignParentBottom="true"
+       android:layout_centerHorizontal="true"
+       android:layout_marginTop="20dp"
+     >
+   </FrameLayout>
+    
 
 </RelativeLayout>

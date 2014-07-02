@@ -33,16 +33,23 @@ public class TwitterClient extends OAuthBaseClient {
         super(context, REST_API_CLASS, REST_URL, REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REST_CALLBACK_URL);
     }
     
-    public void getHomeTimeline(AsyncHttpResponseHandler handler,long max_id, long since_id, boolean homeTimeline){
-    	String apiUrl;
-    	if(homeTimeline){
-    		apiUrl = getApiUrl("statuses/home_timeline.json");
-    	} else {
-    		apiUrl = getApiUrl("statuses/mentions_timeline.json");
-    	}
-    	
-    	Log.d("debug","running Twitter Client: " + homeTimeline + "since_id: " + since_id + "max_id: " + max_id);
+    public void getHomeTimeline(AsyncHttpResponseHandler handler,long max_id, long since_id, int tid, long userid){
+    	String apiUrl = new String();
     	RequestParams params = new RequestParams();
+		switch (tid) {
+		case 0:
+			apiUrl = getApiUrl("statuses/home_timeline.json");
+			break;
+		case 1:
+			apiUrl = getApiUrl("statuses/mentions_timeline.json");
+			break;
+		case 2:
+			apiUrl = getApiUrl("statuses/user_timeline.json");
+			params.put("user_id", String.valueOf(userid));
+			break;
+		}
+    	Log.d("debug","running Twitter Client: tid: " + tid + "since_id: " + since_id + "max_id: " + max_id);
+    	
     	if(max_id > 0)
     		params.put("max_id", String.valueOf(max_id));
     	if(since_id > 0)
@@ -50,7 +57,7 @@ public class TwitterClient extends OAuthBaseClient {
     	client.get(apiUrl, params,handler);
     }
     
-    public void getUserProfile(AsyncHttpResponseHandler handler){
+    public void getAppUserProfile(AsyncHttpResponseHandler handler){
     	Log.d("debug", "Calling verifying credentials");
     	String apiUrl = getApiUrl("account/verify_credentials.json");
     	RequestParams params = new RequestParams();
@@ -58,6 +65,14 @@ public class TwitterClient extends OAuthBaseClient {
         client.get(apiUrl,params,handler);
     }
 
+    public void getUserProfile(AsyncHttpResponseHandler handler,long userId){
+    	Log.d("debug", "Calling users show");
+    	String apiUrl = getApiUrl("users/show.json");
+    	RequestParams params = new RequestParams();
+    	params.put("user_id", String.valueOf(userId));
+        client.get(apiUrl,params,handler);
+    }
+    
     public void postTweet(AsyncHttpResponseHandler handler, String status){
     	Log.d("debug", "post Tweet");
     	String apiUrl = getApiUrl("statuses/update.json");

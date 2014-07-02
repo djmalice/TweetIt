@@ -1,5 +1,7 @@
 package com.smalltricks.apps.tweetit.activities;
 
+import org.json.JSONObject;
+
 import android.app.ActionBar;
 import android.app.ActionBar.Tab;
 import android.content.Intent;
@@ -11,11 +13,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.smalltricks.apps.tweetit.R;
+import com.smalltricks.apps.tweetit.TwitterClientApplication;
 import com.smalltricks.apps.tweetit.fragments.HomeTimelineFragment;
 import com.smalltricks.apps.tweetit.fragments.MentionsTimelineFragment;
 import com.smalltricks.apps.tweetit.listeners.FragmentTabListener;
 import com.smalltricks.apps.tweetit.models.Tweet;
+import com.smalltricks.apps.tweetit.models.User;
 
 public class TimelineActivity extends FragmentActivity {
 	
@@ -72,7 +77,33 @@ public class TimelineActivity extends FragmentActivity {
 	}
 	
 	public void onProfileView(MenuItem mi){
+		TwitterClientApplication.getRestClient().getAppUserProfile(
+				new JsonHttpResponseHandler() {
+					@Override
+					public void onSuccess(JSONObject jsonObject) {
+						User currentUser = new User();
+						try {
+							currentUser = User.fromJSON(jsonObject);
+							startProfileActivity(currentUser);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+
+					@Override
+					public void onFailure(Throwable arg0, String arg1) {
+						// TODO Auto-generated method stub
+						Log.d("debug",arg0.toString());
+						Log.d("debug", arg1.toString());
+					}
+				});
+		
+	}
+	
+	
+	public void startProfileActivity(User currentUser){
 		Intent i= new Intent(this,ProfileActivity.class);
+		i.putExtra("userid", currentUser.getUid());
 		startActivity(i);
 	}
 	

@@ -1,15 +1,12 @@
 package com.smalltricks.apps.tweetit.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
-
-import com.smalltricks.apps.tweetit.models.Tweet;
 
 public class MentionsTimelineFragment extends TweetsListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		homeTimeline = false;
+		tt = timelineType.MENTIONS;
 	}
 	
 	@Override

@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.smalltricks.apps.tweetit.R;
 import com.smalltricks.apps.tweetit.activities.ProfileActivity;
+import com.smalltricks.apps.tweetit.activities.TimelineActivity;
 import com.smalltricks.apps.tweetit.models.Tweet;
 
 public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
@@ -45,17 +47,18 @@ public class TweetArrayAdapter extends ArrayAdapter<Tweet> {
 		//Populate views with the tweet data
 		ImageLoader imageLoader = ImageLoader.getInstance();
 		imageLoader.displayImage(tweet.getUser().getProfileImageUrl(), ivProfileImage);
-		/*ivProfileImage.setTag(tweet.getUser().getId());
+		ivProfileImage.setTag(tweet.getUser().getUid());
 		ivProfileImage.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Intent i = new Intent(getContext(),ProfileActivity.class);
-				i.putExtra("uid", ivProfileImage.getTag());
-				startActivity(i);
+				Intent i =  new Intent(getContext(),ProfileActivity.class);
+				Log.d("debug", v.getTag().toString());
+				i.putExtra("userid", Long.parseLong(v.getTag().toString()));
+				getContext().startActivity(i);
 			}
-		});*/
+		});
 		
 		tvUserName.setText(tweet.getUser().getName());
 		tvHandle.setText("@" + tweet.getUser().getScreenName());
