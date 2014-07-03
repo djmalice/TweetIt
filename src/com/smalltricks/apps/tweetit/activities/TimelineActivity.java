@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -29,15 +30,26 @@ public class TimelineActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS); 
 		setContentView(R.layout.activity_timeline);
 		setupTabs();
 	}
+	
+	// Should be called manually when an async task has started
+    public void showProgressBar() {
+        setProgressBarIndeterminateVisibility(true); 
+    }
+    
+    // Should be called when an async task has finished
+    public void hideProgressBar() {
+    	setProgressBarIndeterminateVisibility(false); 
+    }
 	
 	private void setupTabs() {
 		ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setDisplayShowTitleEnabled(true);
-
+		showProgressBar();
 		Tab tab1 = actionBar
 			.newTab()
 			.setText("Home")
@@ -49,7 +61,7 @@ public class TimelineActivity extends FragmentActivity {
 
 		actionBar.addTab(tab1);
 		actionBar.selectTab(tab1);
-
+		
 		Tab tab2 = actionBar
 			.newTab()
 			.setText("Mentions")
@@ -60,6 +72,7 @@ public class TimelineActivity extends FragmentActivity {
 								MentionsTimelineFragment.class));
 
 		actionBar.addTab(tab2);
+		hideProgressBar();
 	}
 	
 	

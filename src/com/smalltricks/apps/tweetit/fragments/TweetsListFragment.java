@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -36,27 +37,7 @@ public class TweetsListFragment extends Fragment {
 	private long reset_max_id;
 	private long reset_since_id;
 	private long userId;
-	/*protected enum timelineType{
-		HOME("HOME",0),
-		MENTIONS("MENTIONS",1),
-		PROFILE("PROFILE",2);
-		
-		private String stringValue;
-		private int intValue;
-		
-		private timelineType(String toString, int value){
-			stringValue = toString;
-			intValue = value;
-		}
-		
-		public String toString(){
-			return stringValue;
-		}
-		
-		public int getValue(){
-			return intValue;
-		}
-	}*/
+	ProgressBar pb;
 	
 	
 
@@ -79,6 +60,7 @@ public class TweetsListFragment extends Fragment {
 		aTweets = new TweetArrayAdapter(getActivity(),tweets);
 		client = TwitterClientApplication.getRestClient();
 		
+		
 	}
 	
 	@Override
@@ -88,13 +70,16 @@ public class TweetsListFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_tweets_list, container, false);
 		// Assign our view references
 		// lvItems.......
+		pb = (ProgressBar) v.findViewById(R.id.pbLoading);
 		lvTweets = (PullToRefreshListView)v.findViewById(R.id.lvTweets);
 		lvTweets.setAdapter(aTweets);
 		lvTweets.setOnScrollListener(new EndlessScrollListener() {
 			@Override
 			public void onLoadMore(int page, int totalItemsCount) {
 				// TODO Auto-generated method stub
+				pb.setVisibility(ProgressBar.VISIBLE);
 				sendJsonRequest(-1,reset_max_id);
+				pb.setVisibility(ProgressBar.INVISIBLE);
 			}
 		});
 		
@@ -102,7 +87,9 @@ public class TweetsListFragment extends Fragment {
 			@Override
 			public void onRefresh() {
 				// TODO Auto-generated method stub
+				pb.setVisibility(ProgressBar.VISIBLE);
 				fetchNewTweets();
+				pb.setVisibility(ProgressBar.INVISIBLE);
 			}
 		});
 		
